@@ -445,6 +445,7 @@ class InspIRCd3Proto : public IRCDProto
 		if (na->nc->HasExt("UNCONFIRMED"))
 			return;
 
+		IRCD->SendVhost(u, na->GetVhostIdent(), na->GetVhostHost());
 		UplinkSocket::Message(Me) << "METADATA " << u->GetUID() << " accountid :" << na->nc->GetId();
 		UplinkSocket::Message(Me) << "METADATA " << u->GetUID() << " accountname :" << na->nc->display;
 	}
@@ -1685,7 +1686,7 @@ struct IRCDMessageIJoin : IRCDMessage
 		time_t chants = Anope::CurTime;
 		if (params.size() >= 4)
 		{
-			chants = params[2].is_pos_number_only() ? convertTo<unsigned>(params[2]) : 0;
+			chants = params[2].is_pos_number_only() ? convertTo<time_t>(params[2]) : 0;
 			for (unsigned i = 0; i < params[3].length(); ++i)
 				user.first.AddMode(params[3][i]);
 		}
